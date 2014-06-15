@@ -2,11 +2,15 @@
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Linq;
+using System.Text;
 
 namespace PowerBroadcastProvider
 {
     static class Program
     {
+        #region Constants
+
         const string EventLogSourceName = "PowerBroadcastProvider";
         const int PowerSchemePersonalityChangedEventId = 1000;
         const int PowerLineStatusChangedEventId = 2000;
@@ -14,23 +18,71 @@ namespace PowerBroadcastProvider
         const int BatteryStatusChangedEventId = 4000;
         const int DisplayStateChangedEventId = 5000;
 
+        #endregion
+
+        #region Main
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            using (var pb = new PowerBroadcasts(PowerSettingsNotification.All))
-            {
-                pb.BatteryStatusChanged += pb_BatteryStatusChanged;
-                pb.LidswitchStateChanged += pb_LidswitchStateChanged;
-                pb.PowerLineStatusChanged += pb_PowerLineStatusChanged;
-                pb.PowerSchemePersonalityChanged += pb_PowerSchemePersonalityChanged;
-                pb.DisplayStateChanged += pb_DisplayStateChanged;
+            PowerSettingsNotification notifications;
 
-                Application.Run();
+            if (args.Length > 0
+                && Enum.TryParse(args[0], true, out notifications)
+                && notifications != PowerSettingsNotification.None)
+            {
+                using (var pb = new PowerBroadcasts(notifications))
+                {
+                    pb.BatteryStatusChanged += pb_BatteryStatusChanged;
+                    pb.LidswitchStateChanged += pb_LidswitchStateChanged;
+                    pb.PowerLineStatusChanged += pb_PowerLineStatusChanged;
+                    pb.PowerSchemePersonalityChanged += pb_PowerSchemePersonalityChanged;
+                    pb.DisplayStateChanged += pb_DisplayStateChanged;
+
+                    Application.Run();
+                }
+            }
+            else
+            {
+                var sb = new StringBuilder();
+
+                sb.AppendLine("DESCRIPTION");
+                sb.AppendLine("\tRegisters for POWERBROADCAST messages");
+                sb.AppendLine("\tand writes corresponding log entries");
+                sb.AppendLine("\tto the Windows event log.");
+                sb.AppendFormat("\t(Event source name: {0})", EventLogSourceName);
+                sb.AppendLine();
+                sb.AppendLine();
+                sb.AppendLine("\tPass the messages you want to register");
+                sb.AppendLine("\tfor as parameters (comma separated).");
+                sb.AppendLine();
+                sb.AppendLine("PARAMETERS");
+
+                foreach (string s in Enum.GetNames(typeof(PowerSettingsNotification)))
+                {
+                    sb.AppendFormat("\t{0}\n", s);
+                }
+
+                sb.AppendLine();
+                sb.AppendLine("EXAMPLES");
+                sb.AppendLine("\tPowerBroadcastProvider All");
+                sb.AppendLine("\tPowerBroadcastProvider PowerSource,DisplayState");
+                sb.AppendLine("\tPowerBroadcastProvider \"PowerSource,  DisplayState\"");
+                sb.AppendLine("\tPowerBroadcastProvider pOwErScHeMePeRsOnAlItY");
+
+                MessageBox.Show(
+                    sb.ToString(),
+                    "PowerBroadcastProvider info",
+                    MessageBoxButtons.OK);
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         private static void WriteLogEntry(string message, int id)
         {
@@ -45,6 +97,10 @@ namespace PowerBroadcastProvider
             {
             }
         }
+
+        #endregion
+
+        #region EventHandlers
 
         static void pb_PowerSchemePersonalityChanged(object sender, PowerSchemeEventArgs e)
         {
@@ -90,5 +146,7 @@ namespace PowerBroadcastProvider
 
             WriteLogEntry(msg, id);
         }
+
+        #endregion
     }
 }
