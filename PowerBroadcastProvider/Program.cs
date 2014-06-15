@@ -1,9 +1,8 @@
 ﻿using StagWare.Windows.Monitoring;
 using System;
 using System.Diagnostics;
-using System.Windows.Forms;
-using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace PowerBroadcastProvider
 {
@@ -53,8 +52,7 @@ namespace PowerBroadcastProvider
                 sb.AppendLine("\tRegisters for POWERBROADCAST messages");
                 sb.AppendLine("\tand writes corresponding log entries");
                 sb.AppendLine("\tto the Windows event log.");
-                sb.AppendFormat("\t(Event source name: {0})", EventLogSourceName);
-                sb.AppendLine();
+                sb.AppendFormat("\t(Event source name: {0})\n", EventLogSourceName);
                 sb.AppendLine();
                 sb.AppendLine("\tPass the messages you want to register");
                 sb.AppendLine("\tfor as parameters (comma separated).");
@@ -70,8 +68,8 @@ namespace PowerBroadcastProvider
                 sb.AppendLine("EXAMPLES");
                 sb.AppendLine("\tPowerBroadcastProvider All");
                 sb.AppendLine("\tPowerBroadcastProvider PowerSource,DisplayState");
-                sb.AppendLine("\tPowerBroadcastProvider \"PowerSource,  DisplayState\"");
-                sb.AppendLine("\tPowerBroadcastProvider pOwErScHeMePeRsOnAlItY");
+                sb.AppendLine("\tPowerBroadcastProvider powersource,displaystate");
+                sb.AppendLine("\tPowerBroadcastProvider \"powersource,  displaystate\"");
 
                 MessageBox.Show(
                     sb.ToString(),

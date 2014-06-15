@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Bundle Name="PowerSetupProviderBootstrapper" Version="1.0.0.0" Manufacturer="" UpgradeCode="6066cc06-857a-4342-b0a5-03a79f5f520c">
-		<BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" />
 
-		<Chain>
-			<!-- TODO: Define the list of chained packages. -->
-			<!-- <MsiPackage SourceFile="path\to\your.msi" /> -->
-		</Chain>
-	</Bundle>
+  <!--Includes-->
+  <?include $(var.PowerBroadcastProviderSetup.ProjectDir)Constants.wxi ?>
+
+  <Bundle Name="$(var.ProductName)" Version="$(var.Version)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeGuid)">
+
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
+      <Payload SourceFile="$(var.ProjectDir)Resources\logoside.png" />
+    </BootstrapperApplicationRef>
+
+    <WixVariable Id="WixStdbaThemeXml" Value="$(var.ProjectDir)Resources\Bundle2Theme.xml" />
+    <WixVariable Id="WixStdbaThemeWxl" Value="$(var.ProjectDir)Resources\HyperlinkTheme.wxl" />
+    <WixVariable Id="WixStdbaLicenseUrl" Value="" />
+
+    <Variable Name="InstallFolder" Type="string" Value="[ProgramFilesFolder]$(var.ProductName)"/>
+
+    <Chain>
+      <PackageGroupRef Id="NetFx40ClientWeb"/>
+      <MsiPackage Compressed="yes" SourceFile="$(var.PowerBroadcastProviderSetup.TargetPath)">
+        <MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
+      </MsiPackage>
+    </Chain>
+  </Bundle>
 </Wix>

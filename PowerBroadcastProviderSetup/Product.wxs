@@ -1,30 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="PowerBroadcastProviderSetup" Language="1033" Version="1.0.0.0" Manufacturer="" UpgradeCode="f441d296-972c-4f51-af31-ce1678cc7457">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate />
+  <!--Includes-->
+  <?include $(var.ProjectDir)Constants.wxi ?>
 
-		<Feature Id="ProductFeature" Title="PowerBroadcastProviderSetup" Level="1">
-			<ComponentGroupRef Id="ProductComponents" />
-		</Feature>
-	</Product>
+  <Product Id="*" Name="$(var.ProductName)" Version="$(var.Version)" Language="1033" Codepage="1252"
+           Manufacturer="$(var.Manufacturer)"  UpgradeCode="$(var.UpgradeGuid)">
 
-	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="PowerBroadcastProviderSetup" />
-			</Directory>
-		</Directory>
-	</Fragment>
+    <!--Package-->
+    <Package InstallerVersion="300" Compressed="yes"  Id="*" InstallScope="perMachine"
+             Manufacturer="$(var.Manufacturer)" Description="$(var.ProductName) Installer"/>
 
-	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-			<!-- <Component Id="ProductComponent"> -->
-				<!-- TODO: Insert files, registry keys, and other resources here. -->
-			<!-- </Component> -->
-		</ComponentGroup>
-	</Fragment>
+    <!--Upgrade-->
+    <MajorUpgrade Schedule="afterInstallInitialize"
+                  AllowDowngrades="no"
+                  AllowSameVersionUpgrades="no"
+                  DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
+
+    <!--Media-->
+    <Media Id="1" Cabinet="PBC.cab" EmbedCab="yes" CompressionLevel="high"/>
+
+    <!--.NET Framework check-->
+    <PropertyRef Id="NETFRAMEWORK40CLIENT"/>
+
+    <Condition Message="$(var.ProductName) requires .NET Framework 4.0.">
+      <![CDATA[NETFRAMEWORK40CLIENT]]>
+    </Condition>
+
+    <!--Features-->
+    <Feature Id="PowerBroadcastProvider" Title="$(var.ProductName)" Level="1">
+      <ComponentRef Id="PowerBroadcastProviderExe" />
+    </Feature>
+  </Product>
+
+  <Fragment>
+    <!--Directory structure-->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
+      </Directory>
+    </Directory>
+
+    <!--Install directory setup-->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="PowerBroadcastProviderExe" Guid="7B0A9D79-0E9C-4ABA-B13B-894CA7B67344">
+        
+        <File Id="PowerBroadcastProvider.exe" Name="PowerBroadcastProvider.exe" DiskId="1" Vital="yes" KeyPath="yes"
+              Source="$(var.PowerBroadcastProvider.TargetDir)PowerBroadcastProvider.exe">
+
+          <?if $(var.Configuration) = "Release"?>
+          <netfx:NativeImage Id="PowerBroadcastProviderNativeImage" Priority="1" Platform="all"/>
+          <?endif?>
+        </File>
+        
+        <RegistryValue Root="HKMU" Key="Software\$(var.CompanyName)\$(var.ProductName)" 
+                       Name="installed" Type="integer" Value="1" />
+        
+        <RegistryValue Name="PowerBroadcastProvider" Root="HKLM" Action="write"
+                       Key="Software\Microsoft\Windows\CurrentVersion\Run"                       
+                       Value="[PowerBroadcastProvider.exe]" Type="string" />
+
+        <util:EventSource Name="PowerBroadcastProvider" Log="Application"
+                          EventMessageFile="[NETFRAMEWORK40CLIENTINSTALLROOTDIR]EventLogMessages.dll" />        
+      </Component>
+    </DirectoryRef>   
+  </Fragment>
 </Wix>
