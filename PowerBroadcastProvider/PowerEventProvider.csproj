@@ -35,6 +35,18 @@
   <PropertyGroup>
     <StartupObject>PowerBroadcastProvider.Program</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>PowerBroadcastProvider.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug %28x64%29|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug %28x64%29\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -47,12 +59,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="StagWare.Windows.Monitoring\BatteryStatusEventArgs.cs" />
-    <Compile Include="StagWare.Windows.Monitoring\DisplayStateEventArgs.cs" />
-    <Compile Include="StagWare.Windows.Monitoring\LidswitchStatusEventArgs.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\EventArgs\BatteryStatusEventArgs.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\EventArgs\DisplayStateEventArgs.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\PowerEventProvider\IPowerEventProvider.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\EventArgs\LidswitchStatusEventArgs.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\PowerEventProvider\PowerEventArgs.cs" />
     <Compile Include="StagWare.Windows.Monitoring\PowerBroadcasts.cs" />
-    <Compile Include="StagWare.Windows.Monitoring\PowerLineStatusEventArgs.cs" />
-    <Compile Include="StagWare.Windows.Monitoring\PowerSchemeEventArgs.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\EventArgs\PowerLineStatusEventArgs.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\EventArgs\PowerSchemeEventArgs.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\PowerEventProvider\PowerEventProvider.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\PowerEventProvider\WindowPowerEventProvider.cs" />
     <Compile Include="StagWare.Windows\MessageReceiverWindow.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -80,6 +96,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="PowerBroadcastProvider.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

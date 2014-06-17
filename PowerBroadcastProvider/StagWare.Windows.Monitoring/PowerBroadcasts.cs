@@ -85,7 +85,10 @@ namespace StagWare.Windows.Monitoring
             public static readonly Guid GUID_CONSOLE_DISPLAY_STATE = new Guid("6fe69556-704a-47a0-8f24-c28d936fda47");
 
             public const int DEVICE_NOTIFY_WINDOW_HANDLE = 0;
-            public const int WM_POWERBROADCAST = 0x0218;
+            public const int DEVICE_NOTIFY_SERVICE_HANDLE = 1;
+
+            
+            
             public const int PBT_POWERSETTINGCHANGE = 0x8013;
 
             #endregion
@@ -114,7 +117,7 @@ namespace StagWare.Windows.Monitoring
 
         #region Private Fields
 
-        private MessageReceiverWindow window;
+        private PowerEventProvider provider;
         private Dictionary<PowerSettingsNotification, IntPtr> notificationHandles;
 
         #endregion
@@ -131,16 +134,16 @@ namespace StagWare.Windows.Monitoring
 
         #region Constructor
 
-        public PowerBroadcasts()
-            : this(PowerSettingsNotification.None)
+        public PowerBroadcasts(PowerEventProvider provider)
+            : this(PowerSettingsNotification.None, provider)
         {
         }
 
-        public PowerBroadcasts(PowerSettingsNotification notifications)
+        public PowerBroadcasts(PowerSettingsNotification notifications, PowerEventProvider provider)
         {
             this.notificationHandles = new Dictionary<PowerSettingsNotification, IntPtr>();
-            this.window = new MessageReceiverWindow();
-            this.window.MessageReceived += new EventHandler<MessageReceivedEventArgs>(window_MessageReceived);
+            this.provider = provider;
+            this.provider.EventReceived += provider_EventReceived;
 
             RegisterNotifications(notifications);
         }
@@ -176,11 +179,11 @@ namespace StagWare.Windows.Monitoring
                             break;
 
                         case PowerSettingsNotification.DisplayState:
-                            if (Environment.OSVersion.Version >= NT62Version)
-                            {
-                                guid = NativeMethods.GUID_CONSOLE_DISPLAY_STATE;
-                            }
-                            else
+                            //if (Environment.OSVersion.Version >= NT62Version)
+                            //{
+                            //    guid = NativeMethods.GUID_CONSOLE_DISPLAY_STATE;
+                            //}
+                            //else
                             {
                                 guid = NativeMethods.GUID_MONITOR_POWER_ON;
                             }
@@ -188,9 +191,9 @@ namespace StagWare.Windows.Monitoring
                     }
 
                     IntPtr handle = NativeMethods.RegisterPowerSettingNotification(
-                        this.window.Handle,
+                        this.provider.ReceiverHandle,
                         ref guid,
-                        NativeMethods.DEVICE_NOTIFY_WINDOW_HANDLE);
+                        (int)this.provider.HandleType);
 
                     this.notificationHandles.Add(n, handle);
                 }
@@ -256,15 +259,14 @@ namespace StagWare.Windows.Monitoring
         #endregion
 
         #region EventHandlers
-
-        private void window_MessageReceived(object sender, MessageReceivedEventArgs e)
+        
+        void provider_EventReceived(object sender, PowerEventArgs e)
         {
-            if ((e.Message.Msg == NativeMethods.WM_POWERBROADCAST)
-                && (e.Message.WParam.ToInt32() == NativeMethods.PBT_POWERSETTINGCHANGE))
+            if (e.EventType == NativeMethods.PBT_POWERSETTINGCHANGE)
             {
                 var powerSettings = (NativeMethods.POWERBROADCAST_SETTING)Marshal.PtrToStructure(
-                    e.Message.LParam, typeof(NativeMethods.POWERBROADCAST_SETTING));
-                
+                    e.Data, typeof(NativeMethods.POWERBROADCAST_SETTING));
+
                 if (powerSettings.PowerSetting == NativeMethods.GUID_ACDC_POWER_SOURCE)
                 {
                     var args = new PowerLineStatusEventArgs()
@@ -322,7 +324,7 @@ namespace StagWare.Windows.Monitoring
                     OnDisplayStateChanged(args);
                 }
             }
-        }        
+        }
 
         #endregion
 
@@ -342,10 +344,12 @@ namespace StagWare.Windows.Monitoring
             {
                 if (disposeManagedResources)
                 {
-                    //TODO: Dispose managed resources.
+                    if (this.provider != null)
+                    {
+                        this.provider.Dispose();
+                        this.provider = null;
+                    }
                 }
-
-                this.window.DestroyHandle();
 
                 foreach (IntPtr handle in this.notificationHandles.Values)
                 {

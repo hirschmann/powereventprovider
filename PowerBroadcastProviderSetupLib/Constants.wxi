@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+  <!--Constants-->
+  <?define Manufacturer = "Stefan Hirschmann - StagWare"?>
+  <?define CompanyName = "StagWare"?>
+  <?define ProductName = "PowerBroadcastProvider"?>
+  <?define UpgradeGuid = "C9D9F893-134C-4314-93C7-71F90029FDF8"?>
+  <?define Version = "0.1.0.0"?>  
+
+  <?if $(sys.BUILDARCH) = "x64"?>
+  <?define ProgramFiles = ProgramFiles64Folder?>
+  <?define NGenPlatform = "64bit"?>
+  <?define Win64 = "yes"?>
+  <?define FrameworkPath = [NETFRAMEWORK40CLIENTINSTALLROOTDIR64]?>
+  <?else?>
+  <?define ProgramFiles = ProgramFilesFolder?>
+  <?define NGenPlatform = "32bit"?>
+  <?define Win64 = "no"?>
+  <?define FrameworkPath = [NETFRAMEWORK40CLIENTINSTALLROOTDIR]?>
+  <?endif?>
+  
+</Include>

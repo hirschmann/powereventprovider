@@ -17,9 +17,9 @@
                   DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
 
     <!--Platform check-->
-    <Condition Message="This package can only be installed on a 32bit platform.">
-      <![CDATA[NOT VersionNT64]]>
-    </Condition>    
+    <Condition Message="This package can only be installed on a 64bit platform.">
+      <![CDATA[VersionNT64]]>
+    </Condition>
 
     <!--Add features from lib-->
     <FeatureRef Id="PowerBroadcastProvider" />
