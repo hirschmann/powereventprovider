@@ -1,6 +1,6 @@
 ﻿namespace PowerEventProviderService
 {
-    partial class Service
+    partial class PowerEventProviderService
     {
         /// <summary> 
         /// Required designer variable.
@@ -29,10 +29,9 @@
         private void InitializeComponent()
         {
             // 
-            // Service
+            // PowerEventProviderService
             // 
-            this.CanHandlePowerEvent = true;
-            this.ServiceName = "Service1";
+            this.ServiceName = "PowerEventProvider";
 
         }
 

@@ -92,16 +92,6 @@
     <IntermediateOutputPath>obj\$(Platform)\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PowerBroadcastProviderSetupLib\PowerBroadcastProviderSetupLib.wixproj">
-      <Name>PowerBroadcastProviderSetupLib</Name>
-      <Project>{ce20e334-442c-409e-8ed4-7adbf5e36723}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +103,19 @@
       <HintPath>$(WixExtDir)\WixNetFxExtension.dll</HintPath>
       <Name>WixNetFxExtension</Name>
     </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Constants.wxi" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PowerEventProviderService\PowerEventProviderService.csproj">
+      <Name>PowerEventProviderService</Name>
+      <Project>{601b27d3-13d1-4541-9de5-521fd5f5b254}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

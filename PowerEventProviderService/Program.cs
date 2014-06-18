@@ -17,7 +17,7 @@ namespace PowerEventProviderService
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[] 
             { 
-                new Service() 
+                new PowerEventProviderService() 
             };
             ServiceBase.Run(ServicesToRun);
         }

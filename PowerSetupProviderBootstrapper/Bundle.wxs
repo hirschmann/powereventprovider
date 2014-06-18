@@ -2,10 +2,9 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <!--Includes-->
-  <?include $(var.PowerBroadcastProviderSetupLib.ProjectDir)Constants.wxi ?>
+  <?include $(var.PowerBroadcastProviderSetup.ProjectDir)Constants.wxi ?>
 
-  <Bundle Name="$(var.ProductName)" Version="$(var.Version)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeGuid)"
-          IconSourceFile="$(var.PowerBroadcastProvider.ProjectDir)PowerBroadcastProvider.ico">
+  <Bundle Name="$(var.ProductName)" Version="$(var.Version)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeGuid)">
 
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkLicense">
       <Payload SourceFile="$(var.ProjectDir)Resources\logoside.png" />
@@ -22,17 +21,9 @@
 
     <Chain>
       <PackageGroupRef Id="NetFx40ClientWeb"/>
-      
-      <!--<MsiPackage Compressed="yes" SourceFile="$(var.PowerBroadcastProviderSetup.TargetPath)"
-                  InstallCondition="NOT VersionNT64">
-        <MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
-      </MsiPackage>-->
-      
-      <MsiPackage Compressed="yes" SourceFile="$(var.PowerBroadcastProviderSetup64.TargetPath)"
-                  InstallCondition="VersionNT64">
+      <MsiPackage Compressed="yes" SourceFile="$(var.PowerBroadcastProviderSetup.TargetPath)">
         <MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
       </MsiPackage>
-      
     </Chain>
   </Bundle>
 </Wix>

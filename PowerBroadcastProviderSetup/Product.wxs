@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
   
   <!--Includes-->
-  <?include $(var.PowerBroadcastProviderSetupLib.ProjectDir)Constants.wxi ?>
+  <?include $(var.ProjectDir)Constants.wxi ?>
 
   <Product Id="*" Name="$(var.ProductName)" Version="$(var.Version)" Language="1033" Codepage="1252"
            Manufacturer="$(var.Manufacturer)"  UpgradeCode="$(var.UpgradeGuid)">
@@ -16,12 +18,53 @@
                   AllowSameVersionUpgrades="no"
                   DowngradeErrorMessage="A newer version of $(var.ProductName) is already installed." />
 
-    <!--Platform check-->
-    <Condition Message="This package can only be installed on a 32bit platform.">
-      <![CDATA[NOT VersionNT64]]>
-    </Condition>    
-
-    <!--Add features from lib-->
-    <FeatureRef Id="PowerBroadcastProvider" />
+    <!--Add features-->
+    <FeatureRef Id="PowerEventProvider" />
   </Product>
+
+  <Fragment>
+    <!--Media-->
+    <Media Id="1" Cabinet="PBC.cab" EmbedCab="yes" CompressionLevel="mszip"/>
+
+    <!--.NET Framework check-->
+    <PropertyRef Id="NETFRAMEWORK40CLIENT"/>
+
+    <Condition Message="$(var.ProductName) requires .NET Framework 4.0.">
+      <![CDATA[NETFRAMEWORK40CLIENT]]>
+    </Condition>
+
+    <!--Features-->
+    <Feature Id="PowerEventProvider" Title="$(var.ProductName)" Level="1">
+      <ComponentRef Id="PowerEventProviderService" />
+    </Feature>   
+
+    <!--Directory structure-->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="$(var.ProductName)" />
+      </Directory>
+    </Directory>
+
+    <!--Install directory setup-->
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="PowerEventProviderService" Guid="7B0A9D79-0E9C-4ABA-B13B-894CA7B67344">
+
+        <File Id="PowerEventProvider.exe" Name="PowerEventProvider.exe" DiskId="1" Vital="yes" KeyPath="yes"
+              Source="$(var.PowerEventProviderService.TargetDir)PowerEventProvider.exe">
+
+          <?if $(var.Configuration) = "Release"?>
+          <netfx:NativeImage Id="PowerEventProviderNativeImage" Priority="1" Platform="all"/>
+          <?endif?>
+        </File>
+
+        <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Vital="yes" Name="PowerEventProvider" Start="auto"
+                        Account="LocalSystem" ErrorControl="ignore" Interactive="no"
+                        DisplayName="PowerEvent-Provider service"
+                        Description="Provides Windows power events in the event log.">
+        </ServiceInstall>
+        <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="PowerEventProvider" Wait="yes" />
+
+      </Component>
+    </DirectoryRef>
+  </Fragment>
 </Wix>

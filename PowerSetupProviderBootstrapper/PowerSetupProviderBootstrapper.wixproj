@@ -61,33 +61,9 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PowerBroadcastProviderSetup64\PowerBroadcastProviderSetup64.wixproj">
-      <Name>PowerBroadcastProviderSetup64</Name>
-      <Project>{90a2665d-1c9c-446a-8ec4-5102751bb484}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\PowerBroadcastProviderSetupLib\PowerBroadcastProviderSetupLib.wixproj">
-      <Name>PowerBroadcastProviderSetupLib</Name>
-      <Project>{ce20e334-442c-409e-8ed4-7adbf5e36723}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
     <ProjectReference Include="..\PowerBroadcastProviderSetup\PowerBroadcastProviderSetup.wixproj">
       <Name>PowerBroadcastProviderSetup</Name>
       <Project>{f05d957c-a61a-45e6-9357-abe87380910d}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
-    <ProjectReference Include="..\PowerBroadcastProvider\PowerEventProvider.csproj">
-      <Name>PowerEventProvider</Name>
-      <Project>{3cf3ae5e-8738-486d-b391-f6424d2d698e}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

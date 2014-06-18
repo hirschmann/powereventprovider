@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3CF3AE5E-8738-486D-B391-F6424D2D698E}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{AB79B8CB-1175-48B3-B2F8-339AE65EB330}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PowerBroadcastProvider</RootNamespace>
-    <AssemblyName>PowerBroadcastProvider</AssemblyName>
+    <RootNamespace>StagWare.Windows.Monitoring</RootNamespace>
+    <AssemblyName>StagWare.Windows.Monitoring</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -32,73 +30,32 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>PowerBroadcastProvider.Program</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>PowerBroadcastProvider.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug %28x64%29|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug %28x64%29\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StagWare.System.ExtensionMethods\EnumExtensionMethods.cs" />
     <Compile Include="StagWare.Windows.Monitoring\EventArgs\BatteryStatusEventArgs.cs" />
     <Compile Include="StagWare.Windows.Monitoring\EventArgs\DisplayStateEventArgs.cs" />
-    <Compile Include="StagWare.Windows.Monitoring\PowerEventProvider\IPowerEventProvider.cs" />
     <Compile Include="StagWare.Windows.Monitoring\EventArgs\LidswitchStatusEventArgs.cs" />
-    <Compile Include="StagWare.Windows.Monitoring\PowerEventProvider\PowerEventArgs.cs" />
-    <Compile Include="StagWare.Windows.Monitoring\PowerBroadcasts.cs" />
     <Compile Include="StagWare.Windows.Monitoring\EventArgs\PowerLineStatusEventArgs.cs" />
     <Compile Include="StagWare.Windows.Monitoring\EventArgs\PowerSchemeEventArgs.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\PowerBroadcasts.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\PowerEventProvider\IPowerEventProvider.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\PowerEventProvider\PowerEventArgs.cs" />
     <Compile Include="StagWare.Windows.Monitoring\PowerEventProvider\PowerEventProvider.cs" />
+    <Compile Include="StagWare.Windows.Monitoring\PowerEventProvider\ServicePowerEventProvider.cs" />
     <Compile Include="StagWare.Windows.Monitoring\PowerEventProvider\WindowPowerEventProvider.cs" />
-    <Compile Include="StagWare.Windows\MessageReceiverWindow.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StagWare.Windows\MessageReceivedEventArgs.cs" />
-    <Compile Include="StagWare.System.ExtensionMethods\EnumExtensionMethods.cs" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="PowerBroadcastProvider.ico" />
+    <Compile Include="StagWare.Windows\MessageReceiverWindow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

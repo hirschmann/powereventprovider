@@ -24,14 +24,23 @@ namespace StagWare.Windows.Monitoring
             public static extern IntPtr RegisterServiceCtrlHandlerEx(
                 string lpServiceName,
                 ServiceControlHandlerEx cbex,
-                IntPtr context); 
+                IntPtr context);
         }
+
+        #endregion
+
+        #region Private Fields
+
+        IntPtr receiverHandle;
 
         #endregion
 
         #region Properties
 
-        public override IntPtr ReceiverHandle { get; private set; }
+        public override IntPtr ReceiverHandle
+        {
+            get { return receiverHandle; }
+        }
 
         public override HandleType HandleType
         {
@@ -44,7 +53,7 @@ namespace StagWare.Windows.Monitoring
 
         public ServicePowerEventProvider(string serviceName)
         {
-            NativeMethods.RegisterServiceCtrlHandlerEx(
+            this.receiverHandle = NativeMethods.RegisterServiceCtrlHandlerEx(
                 serviceName,
                 new NativeMethods.ServiceControlHandlerEx(HandlerEx),
                 IntPtr.Zero);
