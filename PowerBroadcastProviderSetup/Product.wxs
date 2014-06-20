@@ -60,7 +60,7 @@
 
         <ServiceInstall Id="ServiceInstaller" Type="ownProcess" Vital="yes" Name="PowerEventProvider" Start="auto"
                         Account="LocalSystem" ErrorControl="ignore" Interactive="no"
-                        DisplayName="PowerEvent-Provider service"
+                        DisplayName="PowerEvent-Provider Service"
                         Description="Provides Windows power events in the event log.">
         </ServiceInstall>
         <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="PowerEventProvider" Wait="yes" />
