@@ -12,7 +12,14 @@ namespace StagWare.Windows.Monitoring
 
         private static class NativeMethods
         {
+            public const int NO_ERROR = 0;
+
             public const int SERVICE_CONTROL_STOP = 0x00000001;
+            public const int SERVICE_CONTROL_PAUSE = 0x00000002;
+            public const int SERVICE_CONTROL_CONTINUE = 0x00000003;
+            public const int SERVICE_CONTROL_INTERROGATE = 0x00000004;
+            public const int SERVICE_CONTROL_SHUTDOWN = 0x00000005;
+
             public const int SERVICE_CONTROL_POWEREVENT = 0x0000000D;
 
             public delegate int ServiceControlHandlerEx(int control,
@@ -40,6 +47,9 @@ namespace StagWare.Windows.Monitoring
         #region Events
 
         public event EventHandler ServiceStop;
+        public event EventHandler ServicePause;
+        public event EventHandler ServiceContinue;
+        public event EventHandler ServiceShutdown;
 
         #endregion
 
@@ -77,20 +87,39 @@ namespace StagWare.Windows.Monitoring
 
         protected int HandlerEx(int control, int eventType, IntPtr eventData, IntPtr context)
         {
-            if (control == NativeMethods.SERVICE_CONTROL_STOP)
+            switch (control)
             {
-                OnServiceStop();
-            }
+                case NativeMethods.SERVICE_CONTROL_STOP:
+                    OnServiceStop();
+                    break;
 
-            var args = new PowerEventArgs()
-            {
-                EventType = eventType,
-                Data = eventData
-            };
+                case NativeMethods.SERVICE_CONTROL_PAUSE:
+                    OnServicePause();
+                    break;
 
-            OnEventReceived(args);
+                case NativeMethods.SERVICE_CONTROL_CONTINUE:
+                    OnServiceContinue();
+                    break;
 
-            return 0;
+                case NativeMethods.SERVICE_CONTROL_INTERROGATE:
+                    return NativeMethods.NO_ERROR;
+
+                case NativeMethods.SERVICE_CONTROL_SHUTDOWN:
+                    OnServiceShutdown();
+                    break;
+
+                case NativeMethods.SERVICE_CONTROL_POWEREVENT:
+                    var args = new PowerEventArgs()
+                    {
+                        EventType = eventType,
+                        Data = eventData
+                    };
+
+                    OnEventReceived(args);
+                    break;
+            }            
+
+            return NativeMethods.NO_ERROR;
         }
 
         protected void OnServiceStop()
@@ -98,6 +127,30 @@ namespace StagWare.Windows.Monitoring
             if (this.ServiceStop != null)
             {
                 ServiceStop(this, EventArgs.Empty);
+            }
+        }
+
+        protected void OnServicePause()
+        {
+            if (this.ServicePause != null)
+            {
+                ServicePause(this, EventArgs.Empty);
+            }
+        }
+
+        protected void OnServiceContinue()
+        {
+            if (this.ServiceContinue != null)
+            {
+                ServiceContinue(this, EventArgs.Empty);
+            }
+        }
+
+        protected void OnServiceShutdown()
+        {
+            if (this.ServiceShutdown != null)
+            {
+                this.ServiceShutdown(this, EventArgs.Empty);
             }
         }
 
