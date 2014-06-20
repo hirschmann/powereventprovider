@@ -21,10 +21,10 @@ namespace StagWare.Windows.Monitoring
 
     public enum SystemPowerCondition : uint
     {
-        PoAc = 0,
-        PoDc = 1,
-        PoHot = 2,
-        PoConditionMaximum = 3
+        AcPowerSource = 0,                   //PoAc
+        Battery = 1,                         //PoDc
+        UpsPowerSource = 2,                  //PoHot
+        OutOfRange = 3                       //PoConditionMaximum
     }
 
     public enum PowerSchemePersonality : uint

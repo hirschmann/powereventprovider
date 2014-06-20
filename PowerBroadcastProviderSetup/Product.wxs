@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension"
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
-  
+
   <!--Includes-->
   <?include $(var.ProjectDir)Constants.wxi ?>
 
@@ -24,7 +24,7 @@
 
   <Fragment>
     <!--Media-->
-    <Media Id="1" Cabinet="PBC.cab" EmbedCab="yes" CompressionLevel="mszip"/>
+    <Media Id="1" Cabinet="PBC.cab" EmbedCab="yes" CompressionLevel="medium"/>
 
     <!--.NET Framework check-->
     <PropertyRef Id="NETFRAMEWORK40CLIENT"/>
@@ -36,7 +36,9 @@
     <!--Features-->
     <Feature Id="PowerEventProvider" Title="$(var.ProductName)" Level="1">
       <ComponentRef Id="PowerEventProviderService" />
-    </Feature>   
+      <ComponentRef Id ="StagWare.Windows.Monitoring" />
+      <ComponentRef Id="ServiceConfig" />
+    </Feature>
 
     <!--Directory structure-->
     <Directory Id="TARGETDIR" Name="SourceDir">
@@ -48,7 +50,6 @@
     <!--Install directory setup-->
     <DirectoryRef Id="INSTALLFOLDER">
       <Component Id="PowerEventProviderService" Guid="7B0A9D79-0E9C-4ABA-B13B-894CA7B67344">
-
         <File Id="PowerEventProvider.exe" Name="PowerEventProvider.exe" DiskId="1" Vital="yes" KeyPath="yes"
               Source="$(var.PowerEventProviderService.TargetDir)PowerEventProvider.exe">
 
@@ -63,7 +64,16 @@
                         Description="Provides Windows power events in the event log.">
         </ServiceInstall>
         <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="PowerEventProvider" Wait="yes" />
+      </Component>
 
+      <Component Id="StagWare.Windows.Monitoring" Guid="6966ACEC-A106-44B5-B7B6-9A832A309402">
+        <File Id ="StagWare.Windows.Monitoring.dll" Name="StagWare.Windows.Monitoring.dll" DiskId="1" Vital="yes"
+              Source="$(var.PowerEventProviderService.TargetDir)StagWare.Windows.Monitoring.dll"/>
+      </Component>
+
+      <Component Id="ServiceConfig" Guid="C231AEE6-78D5-4F21-BC09-ED3A35B5D805">
+        <File Id="PowerEventProvider.exe.config" Name="PowerEventProvider.exe.config" DiskId="1" Vital="yes"
+              Source="$(var.PowerEventProviderService.TargetDir)PowerEventProvider.exe.config"/>
       </Component>
     </DirectoryRef>
   </Fragment>

@@ -12,6 +12,7 @@ namespace StagWare.Windows.Monitoring
 
         private static class NativeMethods
         {
+            public const int SERVICE_CONTROL_STOP = 0x00000001;
             public const int SERVICE_CONTROL_POWEREVENT = 0x0000000D;
 
             public delegate int ServiceControlHandlerEx(int control,
@@ -32,6 +33,13 @@ namespace StagWare.Windows.Monitoring
         #region Private Fields
 
         IntPtr receiverHandle;
+        NativeMethods.ServiceControlHandlerEx handler;
+
+        #endregion
+
+        #region Events
+
+        public event EventHandler ServiceStop;
 
         #endregion
 
@@ -53,9 +61,13 @@ namespace StagWare.Windows.Monitoring
 
         public ServicePowerEventProvider(string serviceName)
         {
+            // Make sure to keep a reference of the delegate in scope
+            // to prevent it from being garbage collected.
+            this.handler = new NativeMethods.ServiceControlHandlerEx(HandlerEx);
+
             this.receiverHandle = NativeMethods.RegisterServiceCtrlHandlerEx(
                 serviceName,
-                new NativeMethods.ServiceControlHandlerEx(HandlerEx),
+                handler,
                 IntPtr.Zero);
         }
 
@@ -65,6 +77,11 @@ namespace StagWare.Windows.Monitoring
 
         protected int HandlerEx(int control, int eventType, IntPtr eventData, IntPtr context)
         {
+            if (control == NativeMethods.SERVICE_CONTROL_STOP)
+            {
+                OnServiceStop();
+            }
+
             var args = new PowerEventArgs()
             {
                 EventType = eventType,
@@ -74,6 +91,14 @@ namespace StagWare.Windows.Monitoring
             OnEventReceived(args);
 
             return 0;
+        }
+
+        protected void OnServiceStop()
+        {
+            if (this.ServiceStop != null)
+            {
+                ServiceStop(this, EventArgs.Empty);
+            }
         }
 
         #endregion

@@ -1,30 +1,49 @@
 ﻿using StagWare.Windows.Monitoring;
 using System;
+using System.Configuration;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.ServiceProcess;
+using System.Linq;
+using PowerEventProviderService.Properties;
 
 namespace PowerEventProviderService
 {
     public partial class PowerEventProviderService : ServiceBase
     {
+        #region Constants
+
         const int PowerSchemePersonalityChangedEventId = 1000;
         const int PowerLineStatusChangedEventId = 2000;
         const int LidswitchStateChangedEventId = 3000;
         const int BatteryStatusChangedEventId = 4000;
         const int DisplayStateChangedEventId = 5000;
 
+        #endregion
+
+        #region Private Fields
+
         private PowerBroadcasts pb;
+
+        #endregion
+
+        #region Constructor
 
         public PowerEventProviderService()
         {
             InitializeComponent();
         }
 
+        #endregion
+
+        #region Protected Methods
+
         protected override void OnStart(string[] args)
         {
-            this.pb = new PowerBroadcasts(
-                PowerSettingsNotification.All,
-                new ServicePowerEventProvider(this.ServiceName));
+            var provider = new ServicePowerEventProvider(this.ServiceName);
+            provider.ServiceStop += provider_ServiceStop;
+            this.pb = new PowerBroadcasts(GetEnabledNotifications(), provider);
 
             pb.BatteryStatusChanged += pb_BatteryStatusChanged;
             pb.LidswitchStateChanged += pb_LidswitchStateChanged;
@@ -39,16 +58,46 @@ namespace PowerEventProviderService
             pb = null;
         }
 
+        #endregion
+
         #region Private Methods
+
+        private static PowerSettingsNotification GetEnabledNotifications()
+        {
+            var notifications = PowerSettingsNotification.None;
+
+            if (Settings.Default.MonitorBatteryPercentage)
+            {
+                notifications |= PowerSettingsNotification.BatteryPercentage;
+            }
+
+            if (Settings.Default.MonitorDisplayState)
+            {
+                notifications |= PowerSettingsNotification.DisplayState;
+            }
+
+            if (Settings.Default.MonitorLidswitchState)
+            {
+                notifications |= PowerSettingsNotification.LidswitchState;
+            }
+
+            if (Settings.Default.MonitorPowerSchemePersonality)
+            {
+                notifications |= PowerSettingsNotification.PowerSchemePersonality;
+            }
+
+            if (Settings.Default.MonitorPowerSource)
+            {
+                notifications |= PowerSettingsNotification.PowerSource;
+            }
+
+            return notifications;
+        }
 
         private void WriteLogEntry(string message, int id)
         {
             try
             {
-                Debug.WriteLine("Id: " + id);
-                Debug.WriteLine("Message: " + message);
-                Debug.WriteLine("");
-
                 this.EventLog.WriteEntry(message, EventLogEntryType.Information, id);
             }
             catch
@@ -59,6 +108,11 @@ namespace PowerEventProviderService
         #endregion
 
         #region EventHandlers
+
+        void provider_ServiceStop(object sender, EventArgs e)
+        {
+            OnStop();
+        }
 
         private void pb_PowerSchemePersonalityChanged(object sender, PowerSchemeEventArgs e)
         {
