@@ -5,6 +5,6 @@
   <?define CompanyName = "StagWare"?>
   <?define ProductName = "PowerBroadcastProvider"?>
   <?define UpgradeGuid = "C9D9F893-134C-4314-93C7-71F90029FDF8"?>
-  <?define Version = "0.1.0.0"?> 
+  <?define Version = "1.0.0.0"?> 
   
 </Include>

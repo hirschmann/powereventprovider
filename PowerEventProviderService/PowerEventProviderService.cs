@@ -1,12 +1,8 @@
-﻿using StagWare.Windows.Monitoring;
+﻿using PowerEventProviderService.Properties;
+using StagWare.Windows.Monitoring;
 using System;
-using System.Configuration;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.ServiceProcess;
-using System.Linq;
-using PowerEventProviderService.Properties;
 
 namespace PowerEventProviderService
 {
@@ -54,8 +50,17 @@ namespace PowerEventProviderService
 
         protected override void OnStop()
         {
-            pb.Dispose();
-            pb = null;
+            try
+            {
+                if (pb != null)
+                {
+                    pb.Dispose();
+                    pb = null;
+                }
+            }
+            catch
+            {
+            }
         }
 
         #endregion
@@ -111,7 +116,15 @@ namespace PowerEventProviderService
 
         void provider_ServiceStop(object sender, EventArgs e)
         {
-            OnStop();
+            try
+            {
+                this.Stop();
+                OnStop();
+                this.Dispose(true);
+            }
+            catch
+            {
+            }
         }
 
         private void pb_PowerSchemePersonalityChanged(object sender, PowerSchemeEventArgs e)
