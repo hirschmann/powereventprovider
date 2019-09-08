@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
   <!--Includes-->
-  <?include $(var.PowerBroadcastProviderSetup.ProjectDir)Constants.wxi ?>
+  <?include $(var.PowerEventProviderSetup.ProjectDir)Constants.wxi ?>
 
   <Bundle Name="$(var.ProductName)" Version="$(var.Version)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeGuid)">
 
@@ -21,7 +21,7 @@
 
     <Chain>
       <PackageGroupRef Id="NetFx40ClientWeb"/>
-      <MsiPackage Compressed="yes" SourceFile="$(var.PowerBroadcastProviderSetup.TargetPath)">
+      <MsiPackage Compressed="yes" SourceFile="$(var.PowerEventProviderSetup.TargetPath)">
         <MsiProperty Name="INSTALLFOLDER" Value="[InstallFolder]" />
       </MsiPackage>
     </Chain>

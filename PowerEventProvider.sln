@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PowerBroadcastProviderSetup", "PowerBroadcastProviderSetup\PowerBroadcastProviderSetup.wixproj", "{F05D957C-A61A-45E6-9357-ABE87380910D}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PowerEventProviderSetup", "PowerEventProviderSetup\PowerEventProviderSetup.wixproj", "{F05D957C-A61A-45E6-9357-ABE87380910D}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PowerSetupProviderBootstrapper", "PowerSetupProviderBootstrapper\PowerSetupProviderBootstrapper.wixproj", "{6066CC06-857A-4342-B0A5-03A79F5F520C}"
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PowerEventProviderBootstrapper", "PowerEventProviderBootstrapper\PowerEventProviderBootstrapper.wixproj", "{6066CC06-857A-4342-B0A5-03A79F5F520C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerEventProviderService", "PowerEventProviderService\PowerEventProviderService.csproj", "{601B27D3-13D1-4541-9DE5-521FD5F5B254}"
 EndProject
@@ -34,5 +36,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61C6A2E6-390C-43FA-BB8C-CCAEB300E5DA}
 	EndGlobalSection
 EndGlobal
